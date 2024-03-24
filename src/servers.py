@@ -46,13 +46,14 @@ def main():
     server_data = fetch_data(VATSIM_API)
     if server_data is not None:
         # Raw API output
-        #log_data(type(server_data))
-        #log_data(server_data)
+        # log_data(type(server_data))
+        # log_data(server_data)
         best_server, best_ping = get_best_server(server_data)
         if best_server is not None:
             log_data(
                 f"The best server to play on is: {best_server['name']} with a ping of {int(best_ping)} milliseconds")
         else:
             log_data("Couldn't find a suitable server.")
+
 
 main()
