@@ -1,6 +1,5 @@
 import requests
 
-
 def get_METAR(ICAO):
     url = f'https://metar.vatsim.net/{ICAO}'
     response = requests.get(url)
