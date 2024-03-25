@@ -21,6 +21,7 @@ Please ensure to have Python installed (tested on 3.12). Besides, the following 
 - requests
 - ping3
 - operator
+- json
 
 You can install these using pip. Or by loading the `dependencies.txt` file by typing `pip install -r dependencies.txt`
 in terminal.
