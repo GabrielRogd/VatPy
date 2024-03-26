@@ -78,7 +78,7 @@ def main():
 
     print('METAR:', METAR)
     if METAR is not None and not METAR.startswith("Could not connect") and not METAR.startswith("ICAO code does not"):
-        if METAR.startswith("ICAO code"):
+        if METAR.startswith("ICAO code does not"):
             quit(-1)
         if METAR.startswith('VATSIM Metar Service'):
             print('No ICAO code entered.')
@@ -87,7 +87,8 @@ def main():
         decode = input('Would you like this to be decoded? (yes/no): ')
         if decode.lower() != 'no':
             decoded_METAR = decode_METAR(METAR)
-            print('Decoded METAR:', decoded_METAR)
+            print('Decoded METAR:', decoded_METAR, "\n")
+            input("Press any key to continue: ")
         elif decode.lower() == 'no':
             quit(0)
 

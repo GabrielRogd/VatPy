@@ -1,6 +1,13 @@
 import requests
 import json
 
+def menu():
+    print("1. Choose Division (default is EUD for VATEUD)")
+    print("2. Choose Type (default is 'booking')")
+    print("3 (or enter). Fetch Bookings")
+    print("4. Exit")
+
+
 
 def get_bookings(divisions, types):
     url = "https://atc-bookings.vatsim.net/api/booking"
@@ -20,17 +27,12 @@ def get_bookings(divisions, types):
                 print(booking_info)
     else:
         print("Couldn't fetch from atc-bookings.vatsim.net/api")
-
+    menu()
 
 def main():
-    print("1. Choose Division (default is EUD for VATEUD)")
-    print("2. Choose Type (default is 'booking')")
-    print("3 (or enter). Fetch Bookings")
-    print("4. Exit")
-
+    menu()
     chosen_divisions = ['EUD']
     chosen_types = ['booking']
-
     while True:
         choice = input("\nSelect an option: ")
         if choice == "1":
@@ -47,6 +49,7 @@ def main():
             quit(0)
         else:
             get_bookings(chosen_divisions, chosen_types)
+            print("\n")
 
 
 if __name__ == "__main__":
