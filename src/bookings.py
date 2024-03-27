@@ -7,7 +7,8 @@ def menu():
     print("3 (or enter). Fetch Bookings")
     print("4. Exit")
 
-
+def result(cid,type,callsign,start,end,division,subdivision):
+        print(f"\nCID: {cid}, Type: {type}, Callsign: {callsign}, Starts @: {start}, Ends @: {end}, Division: {division}, Subdivision: {subdivision} \n")
 
 def get_bookings(divisions, types):
     url = "https://atc-bookings.vatsim.net/api/booking"
@@ -17,14 +18,8 @@ def get_bookings(divisions, types):
         data = response.json()
         for book in data:
             if (not divisions and not types) or (book['division'] in divisions and book['type'] in types):
-                booking_info = ("\nCID: " + str(book['cid']) +
-                ", Type: " + str(book['type']) +
-                ", Callsign: " + str(book['callsign']) +
-                ", Starts @: " + str(book['start']) +
-                ", Ends @: " + str(book['end']) +
-                ", Division: " + str(book['division']) +
-                ", Subdivision: " + str(book['subdivision']))
-                print(booking_info)
+                result(book['cid'],book['type'],book['callsign'],book['start'],book['end'],book['division'],book['subdivision'])
+
     else:
         print("Couldn't fetch from atc-bookings.vatsim.net/api")
     menu()
@@ -36,21 +31,17 @@ def main():
     while True:
         choice = input("\nSelect an option: ")
         if choice == "1":
-            division = input("Enter division (like EUD, EUR): ")
+            division = input("Enter division (e.g. EUD, EUR): ")
             chosen_divisions.append(division)
         elif choice == "2":
-            type_ = input("Enter type (like event, booking): ")
-            chosen_types.append(type_)
+            type = input("Enter type (like event, booking): ")
+            chosen_types.append(type)
         elif choice == "3":
             print("Fetching bookings...")
             get_bookings(chosen_divisions, chosen_types)
         elif choice == "4":
-            print("Returning to main.py")
             quit(0)
         else:
             get_bookings(chosen_divisions, chosen_types)
-            print("\n")
 
-
-if __name__ == "__main__":
-    main()
+main()
