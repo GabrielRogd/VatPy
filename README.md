@@ -14,6 +14,8 @@ The project currently consists of the following Python scripts:
 - `metar.py`: A script to fetch raw METAR data from VATSIM's METAR source (metar.vatsim.net/{ICAO}) and has the ability
   to decode it in a more understandable manner (it still needs some work).
 
+- `bookings.py`: A script which updates the user with the ATC bookings within the network, based on the region and the type of booking (whether if it's for an event or a regular booking).
+
 ## Installation
 
 Please ensure to have Python installed (tested on 3.12). Besides, the following Python libraries are required:
