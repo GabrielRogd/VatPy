@@ -79,14 +79,15 @@ def decode_METAR(METAR):
         print(f"Temperature: {temperature}°C")
         print(f"Dew Point: {dew_point}°C")
         print(baro)
-        print("NOSIG - No significant change")
+        if "NOSIG" in item:
+            print("NOSIG - No significant change")
 
 def main():
     ICAO = input('Enter the ICAO code: ')
     METAR = get_METAR(ICAO)
     print('METAR:', METAR)
-    if METAR is not None and not METAR.startswith("Could not connect") and not METAR.startswith("ICAO code does not"):
-        if METAR.startswith("ICAO code does not"):
+    if METAR is not None and not METAR.startswith("Could not connect") and not METAR.startswith("ICAO code either does not"):
+        if METAR.startswith("ICAO code either does not"):
             quit(-1)
         if METAR.startswith("VATSIM Metar Service"):
             print('No ICAO code entered.')
