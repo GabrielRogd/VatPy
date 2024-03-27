@@ -59,8 +59,8 @@ def decode_METAR(METAR):
         elif item.startswith('Q'):  # QNH decoding
             altimeter_info = f"QNH: {item[1:]}hpa"
 
-        elif item.startswith('A'):  # Altimeter decoding
-            altimeter_info = f"Altimeter: {int(item[1:3])}.{int(item[3:5])}"
+        elif item.startswith('A2') or item.startswith('A3'):  # Altimeter decoding
+            altimeter_info = f"Altimeter: {item[1:3]}.{item[3:5]}"
 
     if cloud_info != 'NCD' and cloud_info != 'CLR' and cloud_info != 'CAVOK' and cloud_altitude != 'N/A':
         cloud_altitude_normalised = str(
