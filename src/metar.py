@@ -13,10 +13,10 @@ def get_METAR(ICAO):
     else:
         return "Could not connect to the METAR service."
 
-
 def decode_METAR(METAR):
     split_METAR = METAR.split(' ')  # Breaks between METAR data
 
+    ICAO = METAR[:4]
     wind_direction = 'N/A'
     wind_speed = 'N/A'
     temperature = 'N/A'
@@ -25,7 +25,7 @@ def decode_METAR(METAR):
     cloud_categories = ['SKC', 'CLR', 'FEW', 'SCT', 'BKN', 'OVC', 'NCD', 'CAVOK']
     cloud_info_list = []
     cloud_altitude = 'N/A'
-    altimeter_info = 'N/A'
+    baro = 'N/A'
 
     for item in split_METAR:
         if item.endswith('KT'):
@@ -64,38 +64,39 @@ def decode_METAR(METAR):
                 combined_cloud_info = ', '.join(cloud_info_list)
 
         if item.startswith('Q'):  # QNH decoding
-            altimeter_info = f"QNH: {item[1:]}hpa"
+            baro = f"QNH: {item[1:]}hpa"
 
         elif item.startswith('A2') or item.startswith('A3'):  # Altimeter decoding
-            altimeter_info = f"Altimeter: {item[1:3]}.{item[3:5]}"
+            baro = f"Altimeter: {item[1:3]}.{item[3:5]}"
 
     if cloud_info != 'NCD' and cloud_info != 'CLR' and cloud_info != 'CAVOK' and cloud_altitude != 'N/A':
-        decoding = f'\n\nWind Direction: {wind_direction} degrees\nWind Speed: {wind_speed} knots\nTemperature: {temperature} C\nDew Point: {dew_point} C\nClouds: {combined_cloud_info}\n{altimeter_info}'
-    else:
-        decoding = f'\n\nWind Direction: {wind_direction} degrees\nWind Speed: {wind_speed} knots\nTemperature: {temperature} C\nDew Point: {dew_point} C\nClouds: {combined_cloud_info}\n{altimeter_info}'
-
-    return decoding
-
+        #decoding = f'\n\nWind Direction: {wind_direction} degrees\nWind Speed: {wind_speed} knots\nTemperature: {temperature} C\nDew Point: {dew_point} C\nClouds: {combined_cloud_info}\n{baro}'
+    #return decoding
+        print(f"\nMETAR for {ICAO}:\n")
+        print(f"Wind Direction: {wind_direction} degrees")
+        print(f"Wind Speed: {wind_speed} knots")
+        print(f"Clouds: {combined_cloud_info}")
+        print(f"Temperature: {temperature}°C")
+        print(f"Dew Point: {dew_point}°C")
+        print(baro)
+        print("NOSIG - No significant change")
 
 def main():
     ICAO = input('Enter the ICAO code: ')
     METAR = get_METAR(ICAO)
-
     print('METAR:', METAR)
     if METAR is not None and not METAR.startswith("Could not connect") and not METAR.startswith("ICAO code does not"):
         if METAR.startswith("ICAO code does not"):
             quit(-1)
-        if METAR.startswith('VATSIM Metar Service'):
+        if METAR.startswith("VATSIM Metar Service"):
             print('No ICAO code entered.')
             main()
             quit()
         decode = input('Would you like this to be decoded? (yes/no): ')
         if decode.lower() != 'no':
             decoded_METAR = decode_METAR(METAR)
-            print('Decoded METAR:', decoded_METAR, "\n")
-            input("Press any key to continue: ")
+            input("\nPress any key to continue: ")
         elif decode.lower() == 'no':
             quit(0)
 
-
-main()  # Execute
+main()
