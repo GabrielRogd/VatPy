@@ -22,6 +22,7 @@ def decode_METAR(METAR):
     temperature = 'N/A'
     dew_point = 'N/A'
     cloud_info = 'Clouds: CAVOK'
+    cloud_categories = ['SKC', 'CLR', 'FEW', 'SCT', 'BKN', 'OVC', 'NCD', 'CAVOK']
     cloud_info_list = []
     cloud_altitude = 'N/A'
     altimeter_info = 'N/A'
@@ -36,33 +37,31 @@ def decode_METAR(METAR):
             parts = item.split('/')
             temperature = parts[0]
             dew_point = parts[1] if len(parts) > 1 else 'N/A'
-
-        elif item.startswith(('SKC', 'CLR', 'FEW', 'SCT', 'BKN', 'OVC', 'NCD', 'CAVOK')):
-            cloud_info = item[:3]
-            cloud_altitude = item[3:] if len(item) > 3 else 'N/A'
-            if cloud_altitude.startswith("0"):
-                cloud_altitude = item[4:]
-            if cloud_info == 'SKC':
-                cloud_info = 'Scattered'
-            elif cloud_info == 'CLR':
-                cloud_info = "Clear skies below 12000 feet"
-            elif cloud_info == 'FEW':
-                cloud_info = 'Few clouds'
-            elif cloud_info == 'SCT':
-                cloud_info = 'Scattered'
-            elif cloud_info == 'BKN':
-                cloud_info = 'Broken'
-            elif cloud_info == 'OVC':
-                cloud_info = 'Overcast'
-            elif cloud_info == 'NCD':
-                cloud_info = 'No significant clouds'
-            elif cloud_info == 'CAVOK':
-                return cloud_info
-            
-            full_cloud_info = f"{cloud_info} @ {cloud_altitude}00 feet" if cloud_altitude.isdigit() else cloud_info
-            cloud_info_list.append(full_cloud_info)
-
-        combined_cloud_info = ', '.join(cloud_info_list)
+        for i in cloud_categories:
+            if item.startswith(i):
+                cloud_info = item[:3]
+                cloud_altitude = item[3:] if len(item) > 3 else 'N/A'
+                if cloud_altitude.startswith("0"):
+                    cloud_altitude = item[4:]
+                if cloud_info == 'SKC':
+                    cloud_info = 'Scattered'
+                elif cloud_info == 'CLR':
+                    cloud_info = "Clear skies below 12000 feet"
+                elif cloud_info == 'FEW':
+                    cloud_info = 'Few clouds'
+                elif cloud_info == 'SCT':
+                    cloud_info = 'Scattered'
+                elif cloud_info == 'BKN':
+                    cloud_info = 'Broken'
+                elif cloud_info == 'OVC':
+                    cloud_info = 'Overcast'
+                elif cloud_info == 'NCD':
+                    cloud_info = 'No significant clouds'
+                elif cloud_info == 'CAVOK':
+                    cloudinfo = 'CAVOK - No clouds'
+                full_cloud_info = f"{cloud_info} @ {cloud_altitude}00 feet" if cloud_altitude.isdigit() else cloud_info
+                cloud_info_list.append(full_cloud_info)
+                combined_cloud_info = ', '.join(cloud_info_list)
 
         if item.startswith('Q'):  # QNH decoding
             altimeter_info = f"QNH: {item[1:]}hpa"
