@@ -22,6 +22,7 @@ def decode_METAR(METAR):
     temperature = 'N/A'
     dew_point = 'N/A'
     cloud_info = 'Clouds: CAVOK'
+    cloud_info_list = []
     cloud_altitude = 'N/A'
     altimeter_info = 'N/A'
 
@@ -38,36 +39,41 @@ def decode_METAR(METAR):
 
         elif item.startswith(('SKC', 'CLR', 'FEW', 'SCT', 'BKN', 'OVC', 'NCD', 'CAVOK')):
             cloud_info = item[:3]
+            cloud_altitude = item[3:] if len(item) > 3 else 'N/A'
+            if cloud_altitude.startswith("0"):
+                cloud_altitude = item[4:]
             if cloud_info == 'SKC':
-                cloud_info = "Scattered @"
+                cloud_info = 'Scattered'
             elif cloud_info == 'CLR':
                 cloud_info = "Clear skies below 12000 feet"
             elif cloud_info == 'FEW':
-                cloud_info = 'Few clouds @'
+                cloud_info = 'Few clouds'
             elif cloud_info == 'SCT':
-                cloud_info = 'Scattered @'
+                cloud_info = 'Scattered'
             elif cloud_info == 'BKN':
-                cloud_info = 'Broken @'
+                cloud_info = 'Broken'
             elif cloud_info == 'OVC':
-                cloud_info = 'Overcast @'
+                cloud_info = 'Overcast'
             elif cloud_info == 'NCD':
                 cloud_info = 'No significant clouds'
             elif cloud_info == 'CAVOK':
                 return cloud_info
-            cloud_altitude = item[3:] if len(item) > 3 else 'N/A'
+            
+            full_cloud_info = f"{cloud_info} @ {cloud_altitude}00 feet" if cloud_altitude.isdigit() else cloud_info
+            cloud_info_list.append(full_cloud_info)
 
-        elif item.startswith('Q'):  # QNH decoding
+        combined_cloud_info = ', '.join(cloud_info_list)
+
+        if item.startswith('Q'):  # QNH decoding
             altimeter_info = f"QNH: {item[1:]}hpa"
 
         elif item.startswith('A2') or item.startswith('A3'):  # Altimeter decoding
             altimeter_info = f"Altimeter: {item[1:3]}.{item[3:5]}"
 
     if cloud_info != 'NCD' and cloud_info != 'CLR' and cloud_info != 'CAVOK' and cloud_altitude != 'N/A':
-        cloud_altitude_normalised = str(
-            (str(int(cloud_altitude) * 100) if cloud_altitude.isdigit() else 'N/A') + ' feet')
-        decoding = f'\n\nWind Direction: {wind_direction} degrees\nWind Speed: {wind_speed} knots\nTemperature: {temperature} C\nDew Point: {dew_point} C\nClouds: {cloud_info} {cloud_altitude_normalised}\n{altimeter_info}'
+        decoding = f'\n\nWind Direction: {wind_direction} degrees\nWind Speed: {wind_speed} knots\nTemperature: {temperature} C\nDew Point: {dew_point} C\nClouds: {combined_cloud_info}\n{altimeter_info}'
     else:
-        decoding = f'\n\nWind Direction: {wind_direction} degrees\nWind Speed: {wind_speed} knots\nTemperature: {temperature} C\nDew Point: {dew_point} C\nClouds: {cloud_info}\n{altimeter_info}'
+        decoding = f'\n\nWind Direction: {wind_direction} degrees\nWind Speed: {wind_speed} knots\nTemperature: {temperature} C\nDew Point: {dew_point} C\nClouds: {combined_cloud_info}\n{altimeter_info}'
 
     return decoding
 
