@@ -17,6 +17,7 @@ def decode_METAR(METAR):
     split_METAR = METAR.split(' ')  # Breaks between METAR data
 
     ICAO = METAR[:4]
+    auto = 'AUTO'
     wind_direction = 'N/A'
     wind_speed = 'N/A'
     temperature = 'N/A'
@@ -28,15 +29,30 @@ def decode_METAR(METAR):
     baro = 'N/A'
 
     for item in split_METAR:
+        if item.endswith('Z'):
+            date = item[:2]
+            hour = item[2:4]
+            minutes = item[4:6]
+
         if item.endswith('KT'):
             wind_info = item[:-2]  # remove 'KT' (knots) from wind data
             wind_direction = wind_info[:3]
+            if wind_direction=="VRB":
+                wind_direction = "Variable"
+            else:
+                wind_direction = f"{wind_direction} degrees"
             wind_speed = wind_info[3:]
+            if wind_speed[0] == "0":
+                wind_speed=wind_speed[1:]
 
         elif '/' in item:  # temperature and dew point
             parts = item.split('/')
             temperature = parts[0]
+            if temperature[0] == "0":
+                temperature=temperature[1:]
             dew_point = parts[1] if len(parts) > 1 else 'N/A'
+            if dew_point[0] == "0":
+                dew_point=dew_point[1:]
         for i in cloud_categories:
             if item.startswith(i):
                 cloud_info = item[:3]
@@ -64,16 +80,19 @@ def decode_METAR(METAR):
                 combined_cloud_info = ', '.join(cloud_info_list)
 
         if item.startswith('Q'):  # QNH decoding
-            baro = f"QNH: {item[1:]}hpa"
+            if item[1] == "0":
+                item=item[2:]
+            baro = f"QNH: {item}hpa"
+            
 
         elif item.startswith('A2') or item.startswith('A3'):  # Altimeter decoding
             baro = f"Altimeter: {item[1:3]}.{item[3:5]}"
 
-    if cloud_info != 'NCD' and cloud_info != 'CLR' and cloud_info != 'CAVOK' and cloud_altitude != 'N/A':
-        #decoding = f'\n\nWind Direction: {wind_direction} degrees\nWind Speed: {wind_speed} knots\nTemperature: {temperature} C\nDew Point: {dew_point} C\nClouds: {combined_cloud_info}\n{baro}'
-    #return decoding
+    # decoded output
+    if cloud_info != 'NCD' and cloud_info != 'CLR' and cloud_info != 'CAVOK':
         print(f"\nMETAR for {ICAO}:\n")
-        print(f"Wind Direction: {wind_direction} degrees")
+        print(f"Issued at: Day {date} @ {hour}:{minutes}z (UTC time)")
+        print(f"Wind Direction: {wind_direction}")
         print(f"Wind Speed: {wind_speed} knots")
         print(f"Clouds: {combined_cloud_info}")
         print(f"Temperature: {temperature}°C")
