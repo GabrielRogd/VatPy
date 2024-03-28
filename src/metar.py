@@ -81,7 +81,7 @@ def decode_METAR(METAR):
         if item.startswith('Q'):  # QNH decoding
             if item[1] == "0":
                 item=item[2:]
-            baro = f"QNH: {item}hpa"
+            baro = f"QNH: {item[1:]}hpa"
             
 
         elif item.startswith('A2') or item.startswith('A3'):  # Altimeter decoding
