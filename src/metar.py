@@ -58,7 +58,7 @@ def decode_METAR(METAR):
                 elif cloud_info == 'NCD':
                     cloud_info = 'No significant clouds'
                 elif cloud_info == 'CAVOK':
-                    cloudinfo = 'CAVOK - No clouds'
+                    cloud_info = 'CAVOK - No clouds'
                 full_cloud_info = f"{cloud_info} @ {cloud_altitude}00 feet" if cloud_altitude.isdigit() else cloud_info
                 cloud_info_list.append(full_cloud_info)
                 combined_cloud_info = ', '.join(cloud_info_list)
