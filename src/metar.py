@@ -17,7 +17,6 @@ def decode_METAR(METAR):
     split_METAR = METAR.split(' ')  # Breaks between METAR data
 
     ICAO = METAR[:4]
-    auto = 'AUTO'
     wind_direction = 'N/A'
     wind_speed = 'N/A'
     temperature = 'N/A'
